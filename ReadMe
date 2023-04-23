@@ -1,0 +1,38 @@
+### For using github as a source
+
+
+1. In the file '~/.ssh/config' add:
+
+Host github.com
+User git
+Port 22
+Hostname github.com
+IdentityFile ~/.ssh/<rsa_key_file>
+TCPKeepAlive yes
+IdentitiesOnly yes
+
+
+2. Add file <your_project_name>.ft with:
+
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+  }
+  required_version = ">= 0.13"
+}
+
+provider "yandex" {
+  zone = "ru-central1-b"
+}
+
+module "network-prod" {
+  #source = "./network/"
+  source = "git@github.com:quezovercoatl/terraform_modules.git//yandex_cloud/network"
+  public_cidrs = [["10.111.100.0/24"], ["10.111.101.0/24"]]
+}
+
+3. You can reassign variables in the module by adding new values in a module section:
+
+public_cidrs = [["10.111.100.0/24"], ["10.111.101.0/24"]]
